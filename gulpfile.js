@@ -13,6 +13,7 @@ var gulp = require('gulp'),
     sass = require('gulp-sass'),
     clean = require('gulp-clean'),
     del = require('del'),
+    rtlcss = require('gulp-rtlcss')
     browserSync = require('browser-sync');
 
 var onError = function (err) {
@@ -46,6 +47,7 @@ gulp.task('scss', function () {
     return gulp.src('./src/application.scss')
         .pipe(plumber({errorHandler: onError}))
         .pipe(sass())
+        .pipe(rtlcss())
         .pipe(gulp.dest('./dist/css'));
 });
 
@@ -56,10 +58,10 @@ gulp.task('babel', ['scss'], function () {
         .pipe(gulp.dest('./dist/js'));
 });
 
-gulp.task('watch', function () {
-    gulp.watch('./src/**/*.scss', ['default']);
-    gulp.watch('./src/**/*.js', ['default']);
-    gulp.watch('./src/**/*.html', ['default']);
+gulp.task('watch', ['serve'] ,function () {
+    gulp.watch('./src/**/*.scss', ['build']);
+    gulp.watch('./src/**/*.js', ['build']);
+    gulp.watch('./src/**/*.html', ['build']);
 });
 
 gulp.task('jshint', ['babel', 'scss'], function () {
@@ -118,6 +120,7 @@ gulp.task('minifyCss', ['cleanDist'], function () {
         .pipe(sass())
         .pipe(minifycss())
         .pipe(rename({suffix: '.min'}))
+        .pipe(rtlcss())
         .pipe(gulp.dest('dist/css'));
 });
 
