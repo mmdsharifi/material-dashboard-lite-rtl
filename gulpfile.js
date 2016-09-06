@@ -44,7 +44,7 @@ gulp.task('serve', function () {
 });
 
 gulp.task('scss', function () {
-    return gulp.src('./src/application.scss')
+    return gulp.src('./src/scss/application.scss')
         .pipe(plumber({errorHandler: onError}))
         .pipe(sass())
         .pipe(rtlcss())
@@ -58,7 +58,7 @@ gulp.task('babel', ['scss'], function () {
         .pipe(gulp.dest('./dist/js'));
 });
 
-gulp.task('watch', ['serve'] ,function () {
+gulp.task('watch', ['default', 'serve'] ,function () {
     gulp.watch('./src/**/*.scss', ['build']);
     gulp.watch('./src/**/*.js', ['build']);
     gulp.watch('./src/**/*.html', ['build']);
@@ -70,7 +70,7 @@ gulp.task('jshint', ['babel', 'scss'], function () {
         .pipe(jshint.reporter(stylish));
 });
 
-gulp.task('default', ['cleanDist', 'jshint', 'babel', 'copyJsLib', 'copyCssLib'], function () {
+gulp.task('default', ['cleanDist', 'jshint', 'babel', 'copyJsLib', 'copyCssLib', 'fonts'], function () {
     gulp.src('src/images/**/*')
         .pipe(gulp.dest('dist/images'));
     gulp.src('src/**/*.html')
@@ -115,7 +115,7 @@ gulp.task('minifyJs', ['cleanDist'], function () {
 });
 
 gulp.task('minifyCss', ['cleanDist'], function () {
-    return gulp.src('src/application.scss')
+    return gulp.src('src/scss/application.scss')
         .pipe(plumber({errorHandler: onError}))
         .pipe(sass())
         .pipe(minifycss())
@@ -133,3 +133,8 @@ gulp.task('build', ['minifyJs', 'minifyCss', 'copyMinCssLib', 'copyMinJsLib'], f
     gulp.src('src/images/**/*')
         .pipe(gulp.dest('dist/images'));
 });
+
+gulp.task('fonts', () => {
+    return gulp.src('src/fonts/*')
+        .pipe(gulp.dest('dist/fonts'))
+})
